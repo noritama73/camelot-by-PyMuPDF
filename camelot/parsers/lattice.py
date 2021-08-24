@@ -377,7 +377,8 @@ class Lattice(BaseParser):
                         table, indices, shift_text=self.shift_text
                     )
                     for r_idx, c_idx, text in indices:
-                        table.cells[r_idx][c_idx].text = text
+                        if ((r_idx < len(table.cells)) and (c_idx < len(table.cells[r_idx]))):
+                            table.cells[r_idx][c_idx].text = text
         accuracy = compute_accuracy([[100, pos_errors]])
 
         if self.copy_text is not None:
