@@ -189,9 +189,9 @@ class Lattice(BaseParser):
             for d in shift_text:
                 if d == "l":
                     if (r_idx <= len(t.cells)) && (c_idx <= len(t.cells[r_idx]))
-                    if t.cells[r_idx][c_idx].hspan:
-                        while not t.cells[r_idx][c_idx].left:
-                            c_idx -= 1
+                        if t.cells[r_idx][c_idx].hspan:
+                            while not t.cells[r_idx][c_idx].left:
+                                c_idx -= 1
                 if d == "r":
                     if t.cells[r_idx][c_idx].hspan:
                         while not t.cells[r_idx][c_idx].right:
