@@ -76,13 +76,13 @@ class PDFHandler(object):
             if infile.isEncrypted:
                 infile.decrypt(self.password)
             if pages == "all":
-                page_numbers.append({"start": 1, "end": infile.getNumPages()})
+                page_numbers.append({"start": 1, "end": infile.pageCount})
             else:
                 for r in pages.split(","):
                     if "-" in r:
                         a, b = r.split("-")
                         if b == "end":
-                            b = infile.getNumPages()
+                            b = infile.pageCount
                         page_numbers.append({"start": int(a), "end": int(b)})
                     else:
                         page_numbers.append({"start": int(r), "end": int(r)})
