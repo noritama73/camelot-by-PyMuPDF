@@ -135,9 +135,9 @@ class PDFHandler(object):
                 outfile = fitz.open()
                 p = infile.loadPage(0)
                 if rotation == "anticlockwise":
-                    p.rotate(90)
+                    p.set_rotation(90)
                 elif rotation == "clockwise":
-                    p.rotate(270)
+                    p.set_rotation(270)
                 outfile.insert_pdf(p)
                 """
                 with open(fpath, "wb") as f:
