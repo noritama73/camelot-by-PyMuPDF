@@ -182,3 +182,39 @@ class PDFHandler(object):
                 )
                 tables.extend(t)
         return TableList(sorted(tables))
+    
+    def top_mid(bbox):
+	    return ((bbox[0]+bbox[2])/2, bbox[3])
+ 
+    def bottom_mid(bbox):
+        return ((bbox[0]+bbox[2])/2, bbox[1])
+    
+    def distance(p1, p2):
+        return math.sqrt(((p1[0] -p2[0])**2) + ((p1[1] -p2[1])**2))
+    
+    def get_closest_text(table, htext_objs):
+        min_distance= 999  # Cause 9's are big :)
+        best_guess= None
+        table_mid= top_mid(table._bbox)  # Middle of the TOP of the table
+        for obj in htext_objs:
+            text_mid= bottom_mid(obj.bbox)  # Middle of the BOTTOM of the text
+            d= distance(text_mid, table_mid)
+            if d < min_distance:
+                best_guess= obj.get_text().strip()
+                min_distance= d
+        return best_guess
+    
+    def get_tables_and_titles(pdf_filename):
+        """Here's my hacky code for grabbing tables and guessing at their titles"""
+        my_handler= PDFHandler(pdf_filename)  # from camelot.handlers import PDFHandler
+        tables= camelot.read_pdf(pdf_filename, pages='2,3,4')
+        print('Extracting {:d} tables...'.format(tables.n))
+        titles= []
+        with camelot.utils.TemporaryDirectory() as tempdir:
+            for table in tables:
+                my_handler._save_page(pdf_filename, table.page, tempdir)
+                tmp_file_path= os.path.join(tempdir, f'page-{table.page}.pdf')
+                layout, dim= camelot.utils.get_page_layout(tmp_file_path)
+                htext_objs= camelot.utils.get_text_objects(layout, ltype="horizontal_text")
+                titles.append(get_closest_text(table, htext_objs))  # Might be None
+        return titles, tables
